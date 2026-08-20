@@ -36,10 +36,10 @@ public static class MapNames
             GTZone.monkeBlocksShared => "Monke Blocks",
             GTZone.critters => "Critters",
             GTZone.ghostReactor => "GR",
-            GTZone.customMaps => "Destinations",
+            GTZone.customMaps => "Destinations", //future proofing dkfskc
             GTZone.ranked => "Ranked",
             GTZone.spaceMap => "Space",
-            GTZone.mall => "Mall",
+            GTZone.mall => "Atrium",
             GTZone.arena => "Arena",
             GTZone.hoverboard => "Hoverboard",
             GTZone.GTFC => "VIM",
