@@ -9,73 +9,52 @@ public class PatchScoreBoard
 {
     static void Postfix(GorillaScoreBoard __instance)
     {
-        if (__instance.boardText == null)
-        {
-            return;
-        }
+        if (__instance.boardText == null) return;
 
-        string fullText = __instance.boardText.text;
-        string[] lines = fullText.Split('\n');
+        string[] lines = __instance.boardText.text.Split('\n');
 
         for (int i = 0; i < __instance.lines.Count; i++)
         {
             GorillaPlayerScoreboardLine line = __instance.lines[i];
-
-            if (line == null || line.IsLineActive() == false || string.IsNullOrEmpty(line.playerNameVisible))
-            {
+            if (!line || !line.IsLineActive() || string.IsNullOrEmpty(line.playerNameVisible))
                 continue;
-            }
 
             int lineIndex = i + 2;
-
             if (lineIndex >= lines.Length)
-            {
                 break;
-            }
 
-            string playerName = line.playerNameVisible;
+            string name = line.playerNameVisible;
             VRRig rig = FindRig(line);
-            string mapTag = MapNames.GetFinalMapTag(rig);
-            string oldLine = lines[lineIndex];
-            string newLine = oldLine.Replace(playerName, playerName + mapTag);
-            lines[lineIndex] = newLine;
+            string tag = MapNames.GetFinalMapTag(rig);
+
+            lines[lineIndex] = lines[lineIndex].Replace(name, name + tag);
         }
 
-        string finalText = string.Join("\n", lines);
-        __instance.boardText.text = finalText;
+        __instance.boardText.text = string.Join("\n", lines);
     }
 
     public static void UpdateZones()
     {
         GorillaScoreBoard[] boards = Object.FindObjectsByType<GorillaScoreBoard>(FindObjectsSortMode.None);
-
-        for (int i = 0; i < boards.Length; i++)
+        foreach (var board in boards)
         {
-            GorillaScoreBoard lb = boards[i];
-            if (lb != null)
-            {
-                lb.RedrawPlayerLines();
-            }
+            if (board != null)
+                board.RedrawPlayerLines();
         }
     }
 
     public static VRRig FindRig(GorillaPlayerScoreboardLine line)
     {
         if (line.playerVRRig != null)
-        {
             return line.playerVRRig;
-        }
 
         if (line.linePlayer != null && VRRigCache.Instance != null)
         {
             RigContainer container;
-            bool found = VRRigCache.Instance.TryGetVrrig(line.linePlayer, out container);
-
-            if (found && container != null)
-            {
+            if (VRRigCache.Instance.TryGetVrrig(line.linePlayer, out container) && container != null)
                 return container.Rig;
-            }
         }
+
         return null;
     }
 }
